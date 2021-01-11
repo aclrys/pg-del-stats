@@ -1,0 +1,5 @@
+interval,dataWindowStartTimestamp,dataWindowEndTimestamp,lineItemId,extLineItemId,accountAuctions,domainMatched,targetMatched,targetMatchedButFcapped,targetMatchedButFcapLookupFailed,pacingDeferred,sentToBidder,sentToBidderAsTopMatch,receivedFromBidderInvalidated,receivedFromBidder,sentToClient,sentToClientAsTopMatch,winEvents
+ 0,2020-09-17T17:59:00.000Z,2020-09-17T18:59:00.000Z,bidderPG-2232,2232,0,0,0,0,0,0,0,0,0,0,0,0,0
+ 1,2020-09-17T18:59:00.000Z,2020-09-17T19:59:00.000Z,bidderPG-2232,2232,0,0,0,0,0,0,0,0,0,0,0,0,0
+ 2,2020-09-17T19:59:00.000Z,2020-09-17T20:59:00.000Z,bidderPG-2232,2232,0,0,0,0,0,0,0,0,0,0,0,0,0
+ 3,2020-09-17T20:59:00.000Z,2020-09-17T21:14:00.000Z,bidderPG-2232,2232,0,0,0,0,0,0,0,0,0,0,0,0,0

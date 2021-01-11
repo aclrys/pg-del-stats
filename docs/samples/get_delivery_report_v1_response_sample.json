@@ -1,0 +1,53 @@
+{
+  "reportId": "e27d6c0c-505e-40af-b68e-e198d010edd2",
+  "reportTimeStamp": "2020-08-28T16:37:46.581Z",
+  "dataWindowStartTimeStamp": "2020-08-28T16:32:44.955Z",
+  "dataWindowEndTimeStamp": "2020-08-28T16:37:44.955Z",
+  "deliveryReports": [
+    {
+      "vendor": "vendor",
+      "region": "us-west-2",
+      "instanceId": "20c850bff1a642f4a2c5c89e55b70eec",
+      "bidderCode": "bidderPG",
+      "lineItemId": "bidderPG-2251",
+      "dataWindowStartTimestamp": "2020-08-28T16:32:00.000Z",
+      "dataWindowEndTimestamp": "2020-08-28T16:33:00.000Z",
+      "reportId": "25498d32-e511-430d-bc39-e9162852885d",
+      "lineItemStatus": {
+        "dealId": "709748",
+        "events": [],
+        "lineItemId": "bidderPG-2251",
+        "sentToBidder": 0,
+        "sentToClient": 0,
+        "domainMatched": 0,
+        "extLineItemId": "2251",
+        "targetMatched": 0,
+        "lineItemSource": "bidderPG",
+        "pacingDeferred": 0,
+        "deliverySchedule": [
+          {
+            "planId": "2539869",
+            "tokens": [
+              {
+                "class": 1,
+                "spent": 0,
+                "total": 86,
+                "totalSpent": 0
+              }
+            ],
+            "planStartTimeStamp": "2020-08-28T16:30:00.000Z",
+            "planUpdatedTimeStamp": "2020-08-28T15:13:38.000Z",
+            "planExpirationTimeStamp": "2020-08-28T16:35:00.000Z"
+          }
+        ],
+        "receivedFromBidder": 0,
+        "sentToBidderAsTopMatch": 0,
+        "sentToClientAsTopMatch": 0,
+        "targetMatchedButFcapped": 0,
+        "receivedFromBidderInvalidated": 0,
+        "targetMatchedButFcapLookupFailed": 0
+      },
+      "reportTimestamp": "2020-08-28T16:33:00.000Z"
+    }
+  ]
+}

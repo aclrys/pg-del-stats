@@ -1,0 +1,187 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=TRUE;MODE=MYSQL
+    username: sa
+    password: sa
+    hikari:
+      connection-test-query: SELECT 1 FROM DUAL
+      minimum-idle: 10
+      maximum-pool-size: 20
+      pool-name: del-stats-pool
+      auto-commit: true
+  jackson:
+    date-format: "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+    time-zone: "GMT"
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL57Dialect
+        order_inserts: true
+        jdbc:
+          batch_size: 20
+  main:
+    banner-mode: "off"
+
+deployment:
+  profile: dev
+  infra: vm
+  data-center: aws
+  region: us-west-1
+  system: PG
+  sub-system: "Delivery Stats Service"
+
+services:
+  base-url: /del-stats/api
+  admin-base-url: /del-stats-admin/api
+  validation:
+    enabled: true
+  cors:
+    enabled: true
+    path-pattern: "/**"
+    allow-credentials: false
+    allow-headers: "*"
+    allow-origins: "*"
+    allow-methods: ["GET","HEAD","POST"]
+    max-age-sec: 1800
+  line-item-biddder-code-separator: "PG-"
+  pg-transaction-id-filter-enabled: false
+  delivery-report:
+    bidder-alias-mappings: ""
+    instance-name-cache:
+      expiration-amount: 5
+      expiration-unit: MINUTES
+  delivery-summary-freshness-alert:
+    enabled: false
+    cron: "0 4/5 * * * ?"
+  token-aggr:
+    enabled: false
+    initial-delay-sec: 10
+    refresh-period-sec: 5
+    max-look-back-sec: 120
+    class-field-name: class
+    delivery-schedule-field-name: deliverySchedule
+    plan-start-timestamp-field-name: planStartTimeStamp
+    plan-end-timestamp-field-name: planExpirationTimeStamp
+    spent-field-name: spent
+    tokens-field-name: tokens
+    total-field-name: total
+    total-spent-field-name: totalSpent
+    target-matched-field-name: targetMatched
+    zero-token-percent-response: -10
+  delivery-summary:
+    cron: "0 3/5 * * * ?"
+    aggregate-interval-minute: 5
+    enabled: false
+    max-aggregate-intervals: 3
+    max-summary-intervals: 72
+  alert-proxy:
+    enabled: false
+    url: http://localhost:3000/notify
+    timeout-sec: 5
+    username: ds_user
+    password: ds_password
+    policies:
+      - alert-name: default
+        initial-alerts: 2
+        alert-frequency: 5
+  alert-throttling:
+    initial-delay: 60
+    fixed-delay: 60
+
+server-api-roles:
+  post-delivery-report: pbs
+  get-delivery-report: pa
+  get-token-spend-report: gp
+  get-line-item-summary: readOnly
+  get-delivery-summary-freshness: readOnly
+
+server-auth:
+  enabled: true
+  realm: pg-del-stats-svc
+  principals:
+    - username: user1
+      password: password1
+      roles: pbs, some_other_2
+    - username: user2
+      password: password2
+      roles: pa, some_other_1
+    - username: user3
+      password: password3
+      roles: gp, some_other_1
+
+api:
+  jetty-gzip-handler:
+    enabled: false
+  peek:
+    enabled: true
+  get-delivery-report:
+    enabled: true
+    start-since-period-sec: 300
+    end-since-period-sec: 0
+    page-size: 1000
+  get-token-spend-report:
+    enabled: true
+    start-since-period-sec: 60
+    end-since-period-sec: 0
+  get-line-item-summary:
+    enabled: true
+    start-since-period-sec: 60
+    end-since-period-sec: 0
+    pager-size: 1000
+    max-time-range-sec: 86400
+    csv-report-min-interval-minute: 15
+    csv-report-interval-minute: 60
+  delivery-summary-freshness:
+    enabled: true
+  recreate-line-item-summary:
+    enabled: false
+    max-look-back-in-days: 7
+
+management:
+  endpoints:
+    enabled-by-default: false
+    configprops:
+      cache.time-to-live: 5s
+      enabled: false
+      keys-to-sanitize: password,secret,key,token,.*credentials.*,vcap_services
+    env:
+      cache.time-to-live: 5s
+      enabled: false
+    health:
+      cache.time-to-live: 5s
+      enabled: false
+      show-details: always
+    info:
+      cache.time-to-live: 5s
+      enabled: false
+    metrics:
+      cache.time-to-live: 5s
+      enabled: false
+    web:
+      base-path: /
+      exposure:
+        include: configprops,env,health,info,metrics
+  endpoint:
+    health:
+      defaults:
+        enabled: false
+      diskspace:
+        enabled: false
+      show-details: ALWAYS
+
+metrics:
+  graphite:
+    enabled: false
+    host: localhost
+    port: 3000
+    prefix: pg-del-stats
+
+com.sun.management.jmxremote:
+  port: 8005
+  authenticate: false
+  ssl: false

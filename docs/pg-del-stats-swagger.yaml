@@ -1,0 +1,700 @@
+swagger: '2.0'
+info:
+  description: Programmatic Gauranteed Delivery Stats API
+  version: 1.0.0
+  title: PG Del Stats API
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used to represent authentication roles
+tags:
+- name: pbs
+  description: Prebid Servers
+- name: gp
+  description: General Planner
+- name: pa
+  description: Planning Adapter
+- name: readOnly
+  description: Operations available to readOnly users
+
+paths:
+  /v1/report/delivery:
+    get:
+      tags:
+      - pa
+      summary: retrieve Delivery Reports
+      operationId: retrieveDeliveryReportsV1
+      description: |
+        Set of all delivery reports sent by PBS instances with matching
+        bidder code from the startTime (inclusive) to the end time
+        (exclusive).
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: bidderCode
+        description: Code used for bidding, used to filter reports returned
+        required: true
+        type: string
+      - in: query
+        name: startTime
+        description: start of time range for reports received
+        required: false
+        type: string
+        format: date-time
+      - in: query
+        name: endTime
+        description: end of time range for reports received
+        required: false
+        type: string
+        format: date-time
+      responses:
+        200:
+          description: |
+            Set of all delivery reports sent by PBS instances with
+            matching bidder code from the startTime (inclusive) to
+            the end time (exclusive). 
+          schema:
+            $ref: '#/definitions/GetDeliveryReportResponseV1'
+        400:
+          description: bad input parameter
+    post:
+      tags:
+      - pbs
+      summary: post Delivery Reports
+      operationId: postDeliveryReport
+      description: |
+        On a scheduled basis, each PBS instance will send a Delivery
+        Report for each line active since the last report was sent.
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: deliveryReport
+        description: Delievery Report with Line Item Summaries to store
+        schema:
+          $ref: '#/definitions/PostDeliveryReport'
+      responses:
+        201:
+          description: item created
+        400:
+          description: invalid input, object invalid
+        409:
+          description: an existing item already exists
+  /v2/report/delivery:
+    get:
+      tags:
+      - pa
+      summary: retrieve Delivery Reports
+      operationId: retrieveDeliveryReportsV2
+      description: |
+        Set of all delivery reports sent by PBS instances with matching
+        bidder code from the startTime (inclusive) to the end time
+        (exclusive).
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: bidderCode
+        description: Code used for bidding, used to filter reports returned
+        required: true
+        type: string
+      - in: query
+        name: startTime
+        description: start of time range for reports received
+        required: false
+        type: string
+        format: date-time
+      - in: query
+        name: endTime
+        description: end of time range for reports received
+        required: false
+        type: string
+        format: date-time
+      responses:
+        200:
+          description: |
+            Set of all delivery reports sent by PBS instances with
+            matching bidder code from the startTime (inclusive) to
+            the end time (exclusive). 
+          schema:
+            $ref: '#/definitions/GetDeliveryReportResponseV2'
+        400:
+          description: bad input parameter
+          
+  /v1/report/token-spend:
+    get:
+      tags:
+      - gp
+      summary: retrieve Token Spend reports
+      operationId: retrieveTokenSpendReportV1
+      description: |
+        Set of all token spend reports aggregated since last request
+        or since a requested time.
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: since
+        description: |
+          Return token spend reports since this time
+          (up to 15 mins from current time)
+        type: string
+        format: date-time
+        required: false
+      - in: query
+        name: vendor
+        description: Vendor code, used to filter reports returned
+        required: false
+        type: string
+      - in: query
+        name: region
+        description: Region, used to filter reports returned
+        required: false
+        type: string
+      responses:
+        200:
+          description: |
+            Set of all token spend reports aggregated since last
+            request or since requested time if provided.
+          schema:
+            $ref: '#/definitions/TokenSpendResponse'
+  /v1/report/line-item-summary:
+    get:
+      tags:
+      - readOnly
+      parameters:
+      - in: query
+        name: lineItemIds
+        description: Comma seperated list of LineItemIds to be returned
+        required: false
+        type: string
+      - in: query
+        name: startTime
+        description: start of time range for reports received
+        required: false
+        type: string
+        format: date-time
+      - in: query
+        name: metrics
+        description: end of time range for reports received
+        required: false
+        type: string
+        format: date-time
+      responses:
+        200:
+          description: |
+            Sample results - 
+            interval,dataWindowStartTimestamp,dataWindowEndTimestamp,lineItemId,extLineItemId,accountAuctions,domainMatched,targetMatched,targetMatchedButFcapped,targetMatchedButFcapLookupFailed,pacingDeferred,sentToBidder,sentToBidderAsTopMatch,receivedFromBidderInvalidated,receivedFromBidder,sentToClient,sentToClientAsTopMatch,winEvents
+            0,2020-09-17T17:59:00.000Z,2020-09-17T18:59:00.000Z,bidderPG-2232,2232,0,0,0,0,0,0,0,0,0,0,0,0,0
+            1,2020-09-17T18:59:00.000Z,2020-09-17T19:59:00.000Z,bidderPG-2232,2232,0,0,0,0,0,0,0,0,0,0,0,0,0
+
+definitions:
+  GetDeliveryReportResponseV1:
+    type: object
+    required:
+    - reportId
+    - reportTimeStamp
+    - dataWindowStartTimeStamp
+    - dataWindowEndTimeStamp
+    - deliveryReports
+    properties:
+      reportId:
+        type: string
+        format: uuid
+        example: "e27d6c0c-505e-40af-b68e-e198d010edd2"
+      reportTimeStamp:
+        type: string
+        format: date-time
+        example: "2016-08-29T09:12:35.001Z"
+      dataWindowStartTimeStamp:
+        type: string
+        description: earliest dataWindowStartTime among reports being returned
+        format: date-time
+        example: "2016-08-29T09:12:30.001Z"
+      dataWindowEndTimeStamp:
+        type: string
+        description: latest dataWindowEndTime among reports being returned
+        format: date-time
+        example: "2016-08-29T09:12:35.000Z"
+      deliveryReports:
+        type: array
+        items:
+          $ref: '#/definitions/GetDeliveryReportV1'
+          
+  GetDeliveryReportV1:
+    type: object
+    required:
+    - reportId
+    - reportTimeStamp
+    - dataWindowStartTimeStamp
+    - dataWindowEndTimeStamp
+    - vendor
+    - region
+    - instanceId
+    - clientAuctions
+    - lineItemStatus
+    properties:
+      reportId:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      reportTimeStamp:
+        type: string
+        format: date-time
+        example: "2016-08-29T09:12:35.001Z"
+      dataWindowStartTimeStamp:
+        type: string
+        format: date-time
+        example: "2016-08-29T09:12:30.001Z"
+      dataWindowEndTimeStamp:
+        type: string
+        format: date-time
+        example: "2016-08-29T09:12:35.000Z"
+      vendor:
+        type: string
+      region:
+        type: string
+        example: us-west-1
+      instanceId:
+        type: string
+        format: uuid
+        example: e181e2df-7b63-5a10-90e6-d701748f0851
+      clientAuctions:
+        type: integer
+        example: 200
+      lineItemStatus:
+        type: array
+        items:
+          $ref: '#/definitions/GetLineItemStatusV1'
+
+  GetLineItemStatusV1:
+    type: object
+    required:
+    - lineItemSource
+    - lineItemId
+    - dealId
+    - domainMatched
+    - targetMatched
+    - targetMatchedButFcapped
+    - targetMatchedButFcapLookupFailed
+    - pacingDeferred
+    - sentToBidder
+    - sentToBidderAsTopMatch
+    - receivedFromBidder
+    - receivedFromBidderInvalidated
+    - sentToClient
+    - sentToClientAsTopMatch
+    - events
+    - deliverySchedule
+    properties:
+      lineItemSource:
+        type: string
+        example: "bidderPG"
+      lineItemId:
+        type: string
+        example: "bidderPG-2053"
+      dealId:
+        type: integer
+        example: 12345
+      domainMatched:
+        type: integer
+        example: 10
+      targetMatched:
+        type: integer
+        example: 6
+      targetMatchedButFcapped:
+        type: integer
+        example: 1
+      targetMatchedButFcapLookupFailed:
+        type: integer
+        example: 0
+      pacingDeferred:
+        type: integer
+        example: 14
+      sentToBidder:
+        type: integer
+        example: 6
+      sentToBidderAsTopMatch:
+        type: integer
+        example: 3
+      receivedFromBidder:
+        type: integer
+        example: 4
+      receivedFromBidderInvalidated:
+        type: integer
+        example: 0
+      sentToClient:
+        type: integer
+        example: 4
+      sentToClientAsTopMatch:
+        type: integer
+        example: 3
+      events:
+        type: array
+        items:
+          $ref: '#/definitions/Event'
+      deliverySchedule:
+        type: array
+        items:
+          $ref: '#/definitions/GetDeliveryScheduleV1'
+  GetDeliveryScheduleV1:
+    type: object
+    required: 
+    - planId
+    - planStartTimeStamp
+    - planExpirationTimeStamp
+    - planUpdatedTimeStamp
+    - tokens
+    properties:
+      planId:
+        type: string
+        example: "2396790"
+      planStartTimeStamp:
+        type: string
+        format: date-time
+        example: "2020-08-14T09:20:00.000Z"
+      planExpirationTimeStamp:
+        type: string
+        format: date-time
+        example: "2020-08-14T09:25:00.000Z"
+      planUpdatedTimeStamp:
+        type: string
+        format: date-time
+        example: "2020-08-13T08:09:11.000Z"
+      tokens:
+        type: array
+        items:
+          $ref: '#/definitions/Token'
+  
+  GetDeliveryReportResponseV2:
+    type: object
+    required:
+    - reportId
+    - reportTimeStamp
+    - dataWindowStartTimeStamp
+    - dataWindowEndTimeStamp
+    - deliveryReports
+    properties:
+      reportId:
+        type: string
+        format: uuid
+        example: "b30015ee-2663-458e-b0dd-679d7d035a0c"
+      reportTimeStamp:
+        type: string
+        description: time report was generated by Delivery Stats instance
+        format: date-time
+        example:  "2020-08-28T16:45:22.052Z"
+      reportStartTimeStamp:
+        type: string
+        description: earliest recevied timestamp of reports being returned
+        format: date-time
+        example: "2020-08-28T16:35:00Z"
+      reportEndTimeStamp:
+        type: string
+        description: latest recevied timestamp of reports being returned
+        format: date-time
+        example: "2020-08-28T16:40:00Z"
+      deliveryReports:
+        type: array
+        items:
+          $ref: '#/definitions/GetDeliveryReportV2'
+
+  GetDeliveryReportV2:
+    type: object   
+    required:
+    - lineItemId
+    - wins
+    - targetMatched
+    - accountAuctions
+    - deliverySchedule
+    properties:
+      lineItemId:
+        type: string
+      wins:
+        type: integer
+        example: 0
+      targetMatched:
+        type: integer
+        example: 1
+      accountAuctions:
+        type: integer
+        example: 2
+      deliverySchedule:
+        type: array
+        items:
+          $ref: '#/definitions/GetDeliveryScheduleV2'
+          
+  GetDeliveryScheduleV2:
+    type: object
+    required:
+    - planId
+    - tokensSpent
+    properties:
+      planId:
+        type: string
+        example: "2539893"
+      tokensSpent:
+        type: integer
+        example: 1
+    
+  PostDeliveryReport:
+    type: object
+    required:
+    - reportId
+    - reportTimeStamp
+    - dataWindowStartTimeStamp
+    - dataWindowEndTimeStamp
+    - vendor
+    - region
+    - instanceId
+    - clientAuctions
+    - lineItemStatus
+    properties:
+      reportId:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      reportTimeStamp:
+        type: string
+        format: date-time
+        example: "2016-08-29T09:12:35.001Z"
+      dataWindowStartTimeStamp:
+        type: string
+        format: date-time
+        example: "2016-08-29T09:12:30.001Z"
+      dataWindowEndTimeStamp:
+        type: string
+        format: date-time
+        example: "2016-08-29T09:12:35.000Z"
+      vendor:
+        type: string
+      region:
+        type: string
+        example: us-west-1
+      instanceId:
+        type: string
+        format: uuid
+        example: e181e2df-7b63-5a10-90e6-d701748f0851
+      clientAuctions:
+        type: integer
+        example: 200
+      lineItemStatus:
+        type: array
+        items:
+          $ref: '#/definitions/PostLineItemStatus'
+  PostLineItemStatus:
+    type: object
+    required:
+    - lineItemSource
+    - lineItemId
+    - dealId
+    - domainMatched
+    - targetMatched
+    - targetMatchedButFcapped
+    - targetMatchedButFcapLookupFailed
+    - pacingDeferred
+    - sentToBidder
+    - sentToBidderAsTopMatch
+    - receivedFromBidder
+    - receivedFromBidderInvalidated
+    - sentToClient
+    - sentToClientAsTopMatch
+    - events
+    - deliverySchedule
+    properties:
+      lineItemSource:
+        type: string
+        example: "bidderPG"
+      lineItemId:
+        type: string
+        example: "bidderPG-2053"
+      dealId:
+        type: integer
+        example: 12345
+      domainMatched:
+        type: integer
+        example: 10
+      targetMatched:
+        type: integer
+        example: 6
+      targetMatchedButFcapped:
+        type: integer
+        example: 1
+      targetMatchedButFcapLookupFailed:
+        type: integer
+        example: 0
+      pacingDeferred:
+        type: integer
+        example: 14
+      sentToBidder:
+        type: integer
+        example: 6
+      sentToBidderAsTopMatch:
+        type: integer
+        example: 3
+      receivedFromBidder:
+        type: integer
+        example: 4
+      receivedFromBidderInvalidated:
+        type: integer
+        example: 0
+      sentToClient:
+        type: integer
+        example: 4
+      sentToClientAsTopMatch:
+        type: integer
+        example: 3
+      events:
+        type: array
+        items:
+          $ref: '#/definitions/Event'
+      deliverySchedule:
+        type: array
+        items:
+          $ref: '#/definitions/PostDeliverySchedule'
+          
+  PostDeliverySchedule:
+    type: object
+    required: 
+    - planId
+    - planStartTimeStamp
+    - planExpirationTimeStamp
+    - planUpdatedTimeStamp
+    - tokens
+    properties:
+      planId:
+        type: string
+        example: "2396790"
+      planStartTimeStamp:
+        type: string
+        format: date-time
+        example: "2020-08-14T09:20:00.000Z"
+      planExpirationTimeStamp:
+        type: string
+        format: date-time
+        example: "2020-08-14T09:25:00.000Z"
+      planUpdatedTimeStamp:
+        type: string
+        format: date-time
+        example: "2020-08-13T08:09:11.000Z"
+      tokens:
+        type: array
+        items:
+          $ref: '#/definitions/Token'
+
+  Event:
+    type: object
+    required:
+    - type
+    - count
+    properties:
+      type:
+        type: string
+        example: "win"
+      count:
+        type: integer
+        example: 3
+
+  Token:
+    type: object
+    required:
+    - class
+    - total
+    - spent
+    - totalSpent
+    properties:
+      class:
+        type: integer
+        example: 1
+      total:
+        type: integer
+        example: 4
+      spent:
+        type: integer
+        example: 3
+      totalSpent:
+        type: integer
+        example: 4
+
+  TokenSpendResponse:
+    type: object
+    required:
+    - tokenSpendSummaryLines
+    properties:
+      tokenSpendSummaryLines:
+        type: array
+        items:
+          $ref: '#/definitions/TokenSpendSummary'
+
+  TokenSpendSummary:
+    type: object
+    required:
+    - reportId
+    - vendor
+    - region
+    - instanceId
+    - bidderCode
+    - lineItemId
+    - extLineItemId
+    - dataWindowStartTimestamp
+    - dateWindowEndTimestamp
+    - reportTimestamp
+    - serviceInstanceId
+    - summaryData
+    properties:
+      reportId:
+        type: string
+        format: uuid
+        example: 5996ee56-60c5-430f-ae48-57f1304443f7
+      vendor:
+        type: string
+        example: "bidder"
+      region:
+        type: string
+        example: "us-west-2"
+      instanceId:
+        type: string
+        example: "18374988a98649bc8460345f066e4bf2"
+      bidderCode:
+        type: string
+        example: "bidderPG"
+      lineItemId:
+        type: string
+        example: "bidderPG-2251"
+      extLineItemId:
+        type: string
+        example: "2251"
+      dataWindowStartTimestamp:
+        type: string
+        format: date-time
+        example: "2020-08-28T20:41:00.000Z"
+      dataWindowEndTimestamp:
+        type: string
+        format: date-time
+        example: "2020-08-28T20:42:00.000Z"
+      reportTimestamp:
+        type: string
+        format: date-time
+        example: "2020-08-28T20:42:00.000Z"
+      serviceInstanceId:
+        type: string
+        example: "instance-mbp"
+      summaryData:
+        type: object
+        required:
+        - targetMatched
+        properties:
+          targetMatched:
+            type: integer
+            example: 0
+
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /Forced-Team/PG-Del-Stats/1.0.0
+schemes:
+ - https

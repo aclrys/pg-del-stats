@@ -1,0 +1,29 @@
+[
+  {
+    "bidderCode": "bidderPG",
+    "lineItemId": "bidderPG-638232",
+    "sentToBidder": 1,
+    "sentToClient": 1,
+    "domainMatched": 0,
+    "extLineItemId": "638232",
+    "targetMatched": 1,
+    "lineItemSource": "bidder",
+    "accountAuctions": 1,
+    "receivedFromBidder": 1,
+    "sentToBidderAsTopMatch": 1,
+    "sentToClientAsTopMatch": 1,
+    "targetMatchedButFcapped": 0,
+    "receivedFromBidderInvalidated": 0,
+    "targetMatchedButFcapLookupFailed": 0,
+    "events": [ ],
+    "deliverySchedule": [
+      {
+        "planId": "38753239",
+        "tokens": [{"class": 1, "spent": 1, "total": 44}],
+        "planStartTimeStamp": "2019-11-18T18:15:00Z",
+        "planUpdatedTimeStamp": "2019-11-18T18:09:09Z",
+        "planExpirationTimeStamp": "2019-11-18T18:20:00Z"
+      }
+    ]
+  }
+]

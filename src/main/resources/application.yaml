@@ -1,0 +1,312 @@
+info:
+  app:
+    name: @project.name@
+    artifact: @project.artifactId@
+    description: @project.description@
+    version: @project.version@
+
+server:
+  port: 8080
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,application/javascript,application/json
+    min-response-size: 1024
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/stats?useSSL=false&useLegacyDatetimeCode=false
+    username: stats
+    password: stats
+    hikari:
+      connection-test-query: SELECT 1 FROM DUAL
+      minimum-idle: 10
+      maximum-pool-size: 20
+      pool-name: del-stats-pool
+      auto-commit: true
+      connection-timeout: 10000
+  jackson:
+    date-format: "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+    time-zone: "GMT"
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+        order_inserts: true
+        jdbc:
+          batch_size: 20
+  main:
+    banner-mode: "off"
+
+deployment:
+  profile: dev
+  infra: vm
+  data-center: aws
+  region: us-west-1
+  system: PG
+  sub-system: "Delivery Stats Service"
+
+services:
+  base-url: /del-stats/api
+  admin-base-url: /del-stats/api
+  validation:
+    enabled: true
+  cors:
+    enabled: true
+    path-pattern: "/**"
+    allow-credentials: false
+    allow-headers: "*"
+    allow-origins: "*"
+    allow-methods: ["GET","HEAD","POST"]
+    max-age-sec: 1800
+  line-item-biddder-code-separator: "-"
+  token-aggr:
+    enabled: false
+    initial-delay-sec: 10
+    refresh-period-sec: 60
+    max-look-back-sec: 120
+    delivery-schedule-field-name: deliverySchedule
+    plan-start-timestamp-field-name: planStartTimeStamp
+    plan-end-timestamp-field-name: planExpirationTimeStamp
+    target-matched-field-name: targetMatched
+    zero-token-percent-response: -10
+  delivery-summary:
+    enabled: false
+    cron: "0 1/5 * * * ?"
+    aggregate-interval-minute: 5
+    max-aggregate-intervals: 3
+    max-summary-intervals: 72
+  delivery-report:
+    bidder-alias-mappings: "bidderPG:bidderPG"
+    instance-name-cache:
+      expiration-amount: 5
+      expiration-unit: MINUTES
+  delivery-summary-freshness-alert:
+    enabled: false
+    cron: "0 4/5 * * * ?"
+  alert-proxy:
+    enabled: false
+    url: http://localhost:18080/alerting/api/v1/raiseAlert
+    timeout-sec: 5
+    username: ds_user
+    password: ds_password
+    policies:
+      - alert-name: default
+        initial-alerts: 2
+        alert-frequency: 5
+  alert-throttling:
+    initial-delay: 60
+    fixed-delay: 60
+
+server-api-roles:
+  post-delivery-report: pbs
+  get-delivery-report: pa
+  get-token-spend-report: gp
+  get-line-item-summary: readOnly
+  get-delivery-summary-freshness: readOnly
+
+server-auth:
+  enabled: true
+  realm: pg-del-stats-svc
+  principals:
+    - username: user1
+      password: password1
+      roles: pbs
+    - username: user2
+      password: password2
+      roles: pa, bidderPG
+    - username: user3
+      password: password3
+      roles: gp
+    - username: admin
+      password: admin
+      roles: admin
+    - username: readOnly
+      password: readOnly
+      roles: readOnly
+
+api:
+  jetty-gzip-handler:
+    enabled: true
+  peek:
+    enabled: false
+  get-delivery-report:
+    enabled: true
+    start-since-period-sec: 300
+    end-since-period-sec: 0
+    page-size: 1000
+  get-token-spend-report:
+    enabled: false
+    start-since-period-sec: 180
+    end-since-period-sec: 0
+  get-line-item-summary:
+    enabled: false
+    start-since-period-sec: 900
+    end-since-period-sec: 0
+    pager-size: 1000
+    max-time-range-sec: 345600
+    csv-report-min-interval-minute: 15
+    csv-report-interval-minute: 60
+  delivery-summary-freshness:
+    enabled: false
+  recreate-line-item-summary:
+    enabled: false
+    max-look-back-in-days: 7
+
+management:
+  endpoints:
+    configprops:
+      cache.time-to-live: 5s
+      keys-to-sanitize: password,secret,key,token,.*credentials.*,vcap_services
+      enabled: false
+    env:
+      cache.time-to-live: 5s
+      enabled: false
+    health:
+      cache.time-to-live: 5s
+      enabled: true
+      show-details: always
+    info:
+      cache.time-to-live: 5s
+      enabled: true
+    metrics:
+      cache.time-to-live: 5s
+      enabled: true
+    web:
+      base-path: /del-stats/api/v1/
+      exposure:
+        include: health,info,metrics,mappings
+  endpoint:
+    health:
+      defaults:
+        enabled: false
+      diskspace:
+        enabled: true
+      show-details: ALWAYS
+
+metrics:
+  graphite:
+    enabled: false
+    host: localhost
+    port: 3000
+    prefix: pg.del-stats
+
+com.sun.management.jmxremote:
+  port: 8005
+  authenticate: false
+  ssl: false
+
+---
+spring.profiles: managed
+management.health.defaults.enabled: true
+cors.enabled: true
+metrics.graphite.enabled: true
+
+---
+spring.profiles: local
+management.endpoints.enabled-by-default: true
+
+---
+# dev
+spring.profiles: dev
+services.token-aggr.initial-delay-sec: 3
+services.token-aggr.refresh-period-sec: 60
+management.endpoints.env.enabled: true
+management.endpoints.configprops.enabled: true
+management.endpoints.web.exposure.include: configprops,env,health,info,metrics,mappings
+logging.level.org.prebid.pg.delstats.controller.ServiceController: DEBUG
+logging.level.org.prebid.pg.delstats.services.TokenSpendDataService: DEBUG
+logging.level.org.prebid.pg.delstats.services.DeliveryReportsDataService: DEBUG
+
+---
+spring.profiles: showSQL
+spring.jpa.show-sql: true
+spring.jpa.properties.hibernate.format_sql: true
+logging.level.org.hibernate.SQL: DEBUG
+logging.level.org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+---
+# readOnly
+spring.profiles: readOnly
+spring:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+services:
+  token-aggr:
+    enabled: false
+  delivery-summary:
+    enabled: false
+
+---
+#apiEnabled
+spring.profiles: apiEnabled
+api:
+  get-delivery-report:
+    enabled: true
+  get-line-item-summary:
+    enabled: true
+
+---
+# dev DB work
+spring.profiles: devDB
+spring.jpa.properties.hibernate.generate_statistics: true
+logging.level.org.springframework.orm.jpa.JpaTransactionManager: DEBUG
+
+---
+spring.profiles: local-it-alertapi
+services:
+  alert-proxy:
+    enabled: false
+    url: http://localhost:3030/notify
+    timeout-sec: 5
+    username: ds_user
+    password: ds_password
+
+---
+# qa
+spring.profiles: qa
+logging.level.root: info
+
+---
+# algorithm testing
+spring.profiles: algotest
+deployment.profile: algotest
+services.token-aggr:
+  enabled: false
+  initial-delay-sec: 0
+  refresh-period-sec: 3600
+services.delivery-summary:
+  enabled: false
+  cron: "0 13 * * * ?"
+  aggregate-interval-minute: 60
+spring.jpa.show-sql: true
+management.endpoints.env.enabled: true
+management.endpoints.configprops.enabled: true
+management.endpoints.web.exposure.include: configprops,env,health,info,metrics,mappings
+management.endpoints.metrics.enabled: false
+metrics.graphite.enabled: false
+logging:
+  level:
+    root: info
+    org:
+      hibernate:
+        SQL: DEBUG
+        type.descriptor.sql.BasicBinder: TRACE
+      prebid.pg.delstats:
+        controller:
+          AlgoTestController: DEBUG
+          ServiceController: DEBUG
+        services:
+          TokenSpendDataService: DEBUG
+          DeliveryReportsDataService: DEBUG
+
+---
+#sim db
+spring.profiles: simdb
+spring:
+  datasource:
+    url: jdbc:mysql://pg-sim-central-db-dev.usw1.fanops.net:3306/stats?useSSL=false&useLegacyDatetimeCode=false
+    username: stats
+    password: stats

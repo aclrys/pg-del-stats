@@ -1,0 +1,25 @@
+{
+  "reportId": "b30015ee-2663-458e-b0dd-679d7d035a0c",
+  "reportTimeStamp": "2020-08-28T16:45:22.052Z",
+  "reportStartTimeStamp": "2020-08-28T16:35:00Z",
+  "reportEndTimeStamp": "2020-08-28T16:40:00Z",
+  "deliveryReports": [
+    {
+      "lineItemId": "bidderPG-2263",
+      "extLineItemId": "2263",
+      "wins": 0,
+      "targetMatched": 0,
+      "accountAuctions": 0,
+      "deliverySchedule": [
+        {
+          "planId": "2539893",
+          "tokensSpent": 0
+        },
+        {
+          "planId": "2539894",
+          "tokensSpent": 0
+        }
+      ]
+    }
+  ]
+}

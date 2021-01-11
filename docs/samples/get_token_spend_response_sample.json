@@ -1,0 +1,70 @@
+{
+  "tokenSpendSummaryLines": [
+    {
+      "reportId": "5996ee56-60c5-430f-ae48-57f1304443f7",
+      "vendor": "vendor",
+      "region": "us-west-2",
+      "instanceId": "18374988a98649bc8460345f066e4bf2",
+      "bidderCode": "bidderPG",
+      "lineItemId": "bidderPG-2251",
+      "extLineItemId": "2251",
+      "dataWindowStartTimestamp": "2020-08-28T20:41:00.000Z",
+      "dataWindowEndTimestamp": "2020-08-28T20:42:00.000Z",
+      "reportTimestamp": "2020-08-28T20:42:00.000Z",
+      "serviceInstanceId": "instance-mbp",
+      "summaryData": {
+        "tokenSpent": [
+          {
+            "pc": -10,
+            "class": 1
+          }
+        ],
+        "targetMatched": 0
+      }
+    },
+    {
+      "reportId": "aa896a66-6efd-4fab-b977-b4f8def29b48",
+      "vendor": "vendor",
+      "region": "us-west-2",
+      "instanceId": "18374988a98649bc8460345f066e4bf2",
+      "bidderCode": "bidderPG",
+      "lineItemId": "bidderPG-2262",
+      "extLineItemId": "2262",
+      "dataWindowStartTimestamp": "2020-08-28T20:41:00.000Z",
+      "dataWindowEndTimestamp": "2020-08-28T20:42:00.000Z",
+      "reportTimestamp": "2020-08-28T20:42:00.000Z",
+      "serviceInstanceId": "rpark-mbp",
+      "summaryData": {
+        "tokenSpent": [
+          {
+            "pc": -10,
+            "class": 1
+          }
+        ],
+        "targetMatched": 0
+      }
+    },
+    {
+      "reportId": "c9a3111f-7304-4e29-9b67-2793868aa0b1",
+      "vendor": "vendor",
+      "region": "us-west-2",
+      "instanceId": "18374988a98649bc8460345f066e4bf2",
+      "bidderCode": "bidderPG",
+      "lineItemId": "bidderPG-2264",
+      "extLineItemId": "2264",
+      "dataWindowStartTimestamp": "2020-08-28T20:41:00.000Z",
+      "dataWindowEndTimestamp": "2020-08-28T20:42:00.000Z",
+      "reportTimestamp": "2020-08-28T20:42:00.000Z",
+      "serviceInstanceId": "instance-mbp",
+      "summaryData": {
+        "tokenSpent": [
+          {
+            "pc": -10,
+            "class": 1
+          }
+        ],
+        "targetMatched": 0
+      }
+    }
+  ]
+}

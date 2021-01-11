@@ -1,0 +1,37 @@
+[
+  {
+    "lineItemSource": "bidder",
+    "lineItemId": "bidderPG-1111",
+    "extLineItemId": "1111",
+    "accountAuctions": 400,
+    "domainMatched": 370,
+    "targetMatched": 302,
+    "targetMatchedButFcapped": 1,
+    "targetMatchedButFcapLookupFailed": 0,
+    "sentToBidder": 302,
+    "sentToBidderAsTopMatch": 260,
+    "receivedFromBidder": 302,
+    "receivedFromBidderInvalidated": 1,
+    "sentToClient": 302,
+    "sentToClientAsTopMatch": 250,
+    "lostToLineItems": [
+      {
+        "lineItemSource": "bidder",
+        "lineItemId": "5555",
+        "count": 25
+      },
+      {
+        "lineItemSource": "otherbidder",
+        "lineItemId": "7777",
+        "count": 33
+      }
+    ],
+    "events": [
+      {
+        "type": "win",
+        "count": 20
+      }
+    ],
+    "deliverySchedule": []
+  }
+]

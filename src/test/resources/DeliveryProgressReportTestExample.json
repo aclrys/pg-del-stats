@@ -1,0 +1,88 @@
+{
+  "reportId": "f6798b66-1bd5-4270-94b7-f34763895f77",
+  "reportTimeStamp": "2019-02-01T07:15:00.000Z",
+  "dataWindowStartTimeStamp": "2019-02-01T07:14:00.000Z",
+  "dataWindowEndTimeStamp": "2019-02-01T07:14:59.999Z",
+  "vendor": "vendor",
+  "region": "us-east",
+  "instanceId": "fhbp-pbs0000.iad3.fanops.net",
+  "clientAuctions": 2000,
+  "lineItemStatus": [
+    {
+      "lineItemSource": "bidder",
+      "lineItemId": "bidderPG-1111",
+      "extLineItemId": "1111",
+      "accountAuctions": 400,
+      "domainMatched": 370,
+      "targetMatched": 302,
+      "targetMatchedButFcapped": 1,
+      "targetMatchedButFcapLookupFailed": 0,
+      "sentToBidder": 302,
+      "sentToBidderAsTopMatch": 260,
+      "receivedFromBidder": 302,
+      "receivedFromBidderInvalidated": 1,
+      "sentToClient": 302,
+      "sentToClientAsTopMatch": 250,
+      "lostToLineItems": [
+        {
+          "lineItemSource": "bidder",
+          "lineItemId": "5555",
+          "count": 25
+        },
+        {
+          "lineItemSource": "otherbidder",
+          "lineItemId": "7777",
+          "count": 33
+        }
+      ],
+      "events": [
+        {
+          "type": "win",
+          "count": 20
+        }
+      ],
+      "deliverySchedule": [
+        {
+          "relativePriority": 5,
+          "planStartTimeStamp": "2019-02-01T06:00:00.000Z",
+          "planExpirationTimeStamp": "2019-02-01T06:59:59.999Z",
+          "planUpdatedTimeStamp": "2019-01-31T22:16:44.000Z",
+          "planId": "Plan9",
+          "tokens": [
+            {
+              "class": 1,
+              "total": 5000,
+              "spent": 190,
+              "totalSpent": 1200
+            },
+            {
+              "class": 2,
+              "total": 500,
+              "spent": 28,
+              "totalSpent": 100
+            }
+          ]
+        },
+        {
+          "relativePriority": 6,
+          "planStartTimeStamp": "2019-02-01T07:00:00.000Z",
+          "planExpirationTimeStamp": "2019-02-01T07:59:59.999Z",
+          "planUpdatedTimeStamp": "2019-01-31T22:16:44.000Z",
+          "planId": "Plan9",
+          "tokens": [
+            {
+              "class": 1,
+              "total": 2500,
+              "spent": 20
+            },
+            {
+              "class": 2,
+              "total": 50,
+              "spent": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

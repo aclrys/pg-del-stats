@@ -1,0 +1,28 @@
+{
+  "lineItemSource": "bidder",
+  "lineItemId": "bidderPG-1111",
+  "extLineItemId": "1111",
+  "accountAuctions": 500,
+  "domainMatched": 500,
+  "targetMatched": 400,
+  "targetMatchedButFcapped": 2,
+  "targetMatchedButFcapLookupFailed": 1,
+  "sentToBidder": 300,
+  "sentToBidderAsTopMatch": 300,
+  "receivedFromBidder": 400,
+  "receivedFromBidderInvalidated": 1,
+  "sentToClient": 400,
+  "sentToClientAsTopMatch": 350,
+  "pacingDeferred": 4,
+  "events": [
+    {
+      "type": "lost",
+      "count": 30
+    },
+    {
+      "type": "win",
+      "count": 10
+    }
+  ],
+  "deliverySchedule": []
+}

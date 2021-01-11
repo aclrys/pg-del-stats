@@ -1,0 +1,40 @@
+{
+  "events": [
+    {
+      "type": "win",
+      "count": 2
+    }
+  ],
+  "bidderCode": "bidderPG",
+  "lineItemId": "bidderPG-1",
+  "sentToBidder": 1,
+  "sentToClient": 1,
+  "domainMatched": 0,
+  "extLineItemId": "1",
+  "targetMatched": 1,
+  "lineItemSource": "bidderPG",
+  "pacingDeferred": 0,
+  "accountAuctions": 1,
+  "deliverySchedule": [
+    {
+      "planId": "803364",
+      "tokens": [
+        {
+          "class": 1,
+          "spent": 1,
+          "total": 4,
+          "totalSpent": 1
+        }
+      ],
+      "planStartTimeStamp": "2010-01-01T00:00:00.000Z",
+      "planUpdatedTimeStamp": "2020-02-13T19:45:05.000Z",
+      "planExpirationTimeStamp": "2010-01-01T00:05:00.000Z"
+    }
+  ],
+  "receivedFromBidder": 1,
+  "sentToBidderAsTopMatch": 1,
+  "sentToClientAsTopMatch": 1,
+  "targetMatchedButFcapped": 0,
+  "receivedFromBidderInvalidated": 0,
+  "targetMatchedButFcapLookupFailed": 0
+}
